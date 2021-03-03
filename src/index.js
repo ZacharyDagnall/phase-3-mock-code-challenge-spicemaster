@@ -27,19 +27,23 @@ function spotlightSpice(id) {
                 .then(ingredients => {
                     ingredients.forEach(function (ing) {
                         if (ing.spiceblendId == id) {       // == instead of === for now because id for newIng goes in as string. have to fix
-                            let li = document.createElement('li')
-                            ingredientsList.append(li)
-                            li.setAttribute('ingredient-id', ing.id)
-                            let p = document.createElement('p')
-                            let btn = document.createElement('button')
-                            li.append(p, btn)
-                            btn.id = "delete-button"
-                            p.textContent = ing.name
-                            btn.textContent = "x"
+                            putIngredientDOM(ing)
                         }
                     })
                 })
         })
+}
+
+function putIngredientDOM(ing) {
+    let li = document.createElement('li')
+    ingredientsList.append(li)
+    li.setAttribute('ingredient-id', ing.id)
+    let p = document.createElement('p')
+    let btn = document.createElement('button')
+    li.append(p, btn)
+    btn.id = "delete-button"
+    p.textContent = ing.name
+    btn.textContent = "x"
 }
 
 function updateTitle(id, title) {
@@ -61,10 +65,7 @@ function addIngredient(id, name) {
     })
         .then(r => r.json())
         .then(newIngredient => {
-            let li = document.createElement('li')
-            ingredientsList.append(li)
-            li.textContent = newIngredient.name
-            li.setAttribute('ingredient-id', newIngredient.id)
+            putIngredientDOM(newIngredient)
         })
 }
 
