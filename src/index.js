@@ -1,4 +1,3 @@
-// write your code here
 
 const detail = document.querySelector('#spice-blend-detail')
 const [image, title, ingredientsDiv] = detail.children
@@ -30,7 +29,13 @@ function spotlightSpice(id) {
                         if (ing.spiceblendId == id) {       // == instead of === for now because id for newIng goes in as string. have to fix
                             let li = document.createElement('li')
                             ingredientsList.append(li)
-                            li.textContent = ing.name
+                            li.setAttribute('ingredient-id', ing.id)
+                            let p = document.createElement('p')
+                            let btn = document.createElement('button')
+                            li.append(p, btn)
+                            btn.id = "delete-button"
+                            p.textContent = ing.name
+                            btn.textContent = "x"
                         }
                     })
                 })
@@ -48,16 +53,18 @@ function updateTitle(id, title) {
 }
 
 function addIngredient(id, name) {
+    let info = { "spiceblendId": id, "name": name }
     fetch(`http://localhost:3000/ingredients`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ spiceblendId: id, name })
+        body: JSON.stringify(info)  //JSON.stringify({ spiceblendId: id, name })
     })
         .then(r => r.json())
         .then(newIngredient => {
             let li = document.createElement('li')
             ingredientsList.append(li)
             li.textContent = newIngredient.name
+            li.setAttribute('ingredient-id', newIngredient.id)
         })
 }
 
@@ -85,4 +92,22 @@ function callingAllSpices() {
             })
         })
 }
+
+
+//my own bonus bonus
+//delete an ingredient ?
+ingredientsList.addEventListener('click', event => {
+    if (event.target.matches('button#delete-button')) {
+        let id = event.target.parentNode.getAttribute('ingredient-id')
+        //console.log()
+        fetch(`http://localhost:3000/ingredients/${id}`, {
+            method: 'DELETE'
+        })
+            .then(r => r.json())
+            .then(thisShouldBeEmptyiThink => {
+                let byebyeli = ingredientsList.querySelector(`[ingredient-id="${id}"]`)
+                byebyeli.remove()
+            })
+    }
+})
 
