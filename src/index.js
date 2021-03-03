@@ -27,14 +27,14 @@ function spotlightSpice(id) {
                 .then(ingredients => {
                     ingredients.forEach(function (ing) {
                         if (ing.spiceblendId == id) {       // == instead of === for now because id for newIng goes in as string. have to fix
-                            putIngredientDOM(ing)
+                            putIngredientOnDOM(ing)
                         }
                     })
                 })
         })
 }
 
-function putIngredientDOM(ing) {
+function putIngredientOnDOM(ing) {
     let li = document.createElement('li')
     ingredientsList.append(li)
     li.setAttribute('ingredient-id', ing.id)
@@ -65,7 +65,7 @@ function addIngredient(id, name) {
     })
         .then(r => r.json())
         .then(newIngredient => {
-            putIngredientDOM(newIngredient)
+            putIngredientOnDOM(newIngredient)
         })
 }
 
@@ -96,11 +96,10 @@ function callingAllSpices() {
 
 
 //my own bonus bonus
-//delete an ingredient ?
+//delete an ingredient
 ingredientsList.addEventListener('click', event => {
     if (event.target.matches('button#delete-button')) {
         let id = event.target.parentNode.getAttribute('ingredient-id')
-        //console.log()
         fetch(`http://localhost:3000/ingredients/${id}`, {
             method: 'DELETE'
         })
