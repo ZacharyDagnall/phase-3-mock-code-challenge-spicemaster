@@ -3,6 +3,16 @@
 const detail = document.querySelector('#spice-blend-detail')
 const [image, title, ingredientsDiv] = detail.children
 const ingredientsList = ingredientsDiv.querySelector('ul.ingredients-list')
+const spiceList = document.querySelector('#spice-images')
+
+document.addEventListener('DOMContentLoaded', event => {
+    callingAllSpices()
+    spotlightSpice(1)
+})
+
+spiceList.addEventListener('click', event => {
+    spotlightSpice(event.target.dataset.id)
+})
 
 function spotlightSpice(id) {
     fetch(`http://localhost:3000/spiceblends/${id}`)
@@ -26,8 +36,6 @@ function spotlightSpice(id) {
                 })
         })
 }
-
-spotlightSpice(3)
 
 function updateTitle(id, title) {
     fetch(`http://localhost:3000/spiceblends/${id}`, {
@@ -62,3 +70,19 @@ document.addEventListener('submit', event => {
     }
     event.target.reset()
 })
+
+function callingAllSpices() {
+    fetch(`http://localhost:3000/spiceblends`)
+        .then(r => r.json())
+        .then(spiceblends => {
+            spiceList.replaceChildren()
+            spiceblends.forEach(sb => {
+                let image = document.createElement('img')
+                spiceList.append(image)
+                image.src = sb.image
+                image.alt = sb.name
+                image.dataset.id = sb.id
+            })
+        })
+}
+
